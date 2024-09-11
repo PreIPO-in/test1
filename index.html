@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제닉스 Pre-IPO Account</title>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            text-align: center;
+            color: #333;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out; /* 전체 페이지 로딩 애니메이션 */
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* 배경 컨테이너 */
+        .background-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: url('https://i.ibb.co/3Thk8ss/image.png') no-repeat center center fixed;
+            background-size: cover;
+            filter: blur(3px);
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 750px;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+            flex-direction: column;
+            padding: 20px;
+            animation: slideIn 1s ease-out; /* 컨테이너 애니메이션 */
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .overlay {
+            width: 300px;
+            height: 283px;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-out; /* 이미지 애니메이션 */
+        }
+
+        .btn, .guide-btn {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px;
+            text-align: center;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02); /* 살짝 확장 */
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .btn {
+            background-color: #007aff;
+            color: white;
+            font-size: 1.1em;
+            font-weight: 500;
+            animation: pulse 2s infinite; /* 버튼 애니메이션 */
+        }
+
+        .btn:hover {
+            background-color: #005bb5;
+        }
+
+        .guide-btn {
+            max-width: 250px; /* 크기를 더 작게 */
+            padding: 10px;
+            background-color: #82a61d; /* 채도가 낮은 연한 색상 */
+            color: white;
+            font-size: 0.9em;
+            font-weight: 400;
+        }
+
+        .guide-btn:hover {
+            background-color: #a0b8d0;
+        }
+
+        /* 로딩 스피너 스타일 */
+        .loader {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #007aff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            z-index: 9999;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 로딩 텍스트 스타일 */
+        .loading-text {
+            display: none;
+            position: fixed;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.7em;
+            color: #fff;
+            z-index: 9999;
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.6); /* 반투명한 검정 배경 */
+            border-radius: 10px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @media (max-width: 768px) {
+            .btn, .guide-btn {
+                font-size: 0.9em;
+                padding: 12px;
+            }
+
+            .overlay {
+                width: 250px;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 배경 -->
+    <div class="background-container"></div>
+
+    <div class="container">
+        <!-- PNG 이미지 위에 배치 -->
+        <img src="https://i.ibb.co/L1CZwrc/image.png" alt="PNG Image" class="overlay">
+
+        <!-- 보유주수 확인하기 버튼 -->
+        <a href="#" class="btn" onclick="showLoading()">보유주수 확인하기</a>
+        
+        <!-- 가이드북 보러가기 버튼 -->
+        <a href="#" class="guide-btn" onclick="openGuidebook()">가이드북 보러가기</a>
+    </div>
+
+    <!-- 로딩 스피너 -->
+    <div class="loader" id="loader"></div>
+
+    <!-- 로딩 텍스트 -->
+    <div class="loading-text" id="loadingText">주주 정보를 확인하고 있습니다...</div>
+
+    <!-- 가이드북 로딩 텍스트 -->
+    <div class="loading-text" id="guideLoadingText">가이드북을 불러오고 있습니다...</div>
+
+    <script>
+        function showLoading() {
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('loadingText').style.display = 'block';
+            setTimeout(function() {
+                window.location.href = 'mywallet.html';
+            }, 2000);
+        }
+
+        function openGuidebook() {
+            document.getElementById('guideLoadingText').style.display = 'block';
+            document.getElementById('loader').style.display = 'block';
+            document.querySelector('.guide-btn').style.pointerEvents = 'none'; // 버튼 비활성화
+
+            setTimeout(function() {
+                window.open('https://online.fliphtml5.com/fhciz/bmpi/', '_blank'); // 새 탭 열기
+                document.getElementById('guideLoadingText').style.display = 'none'; // 로딩 메시지 숨기기
+                document.getElementById('loader').style.display = 'none'; // 로딩 스피너 숨기기
+                document.querySelector('.guide-btn').style.pointerEvents = 'auto'; // 버튼 활성화
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>
